@@ -10,12 +10,18 @@ class DynamicFetcher extends HTMLElement {
 
   async connectedCallback() {
     // https://s3.ap-southeast-2.amazonaws.com/stock.publish/dealer_2343/stock.json
+    const baseUrl = 'https://s3.ap-southeast-2.amazonaws.com/stock.publish'; // Get the base URL from the attribute
     const endpoint = this.getAttribute('endpoint'); // Get the endpoint from the attribute
-    const baseUrl = 'https://jsonplaceholder.typicode.com'; // Get the base URL from the attribute
+    const fileName = 'stock.json'
+
+    console.log('baseUrl: ', baseUrl)
+    console.log('endpoint: ', endpoint)
+    console.log('fileName: ', fileName)
     if (baseUrl && endpoint) {
-      const url = `${baseUrl}/${endpoint}`; // Construct the full URL
+      const url = `${baseUrl}/${endpoint}/${fileName}`; // Construct the full URL
       try {
         const data = await this.fetchData(url); // Fetch data using the constructed URL
+        console.log('data', data)
         this.render(data); // Render the fetched data
       } catch (error) {
         this.render({ message: error.message }); // Handle errors during fetch
@@ -35,7 +41,7 @@ class DynamicFetcher extends HTMLElement {
 
   render(data) {
     const content = Array.isArray(data)
-      ? data.map(user => `<p>${user.name} - ${user.email}</p>`).join('') // Prepare content for array of users
+      ? data.map(stock => `<p>${stock.make} - ${stock.model}</p>`).join('') // Prepare content for array of stocks
       : `<p>${data.message}</p>`; // Prepare content for error or single message
 
     this.shadowRoot.innerHTML = `
