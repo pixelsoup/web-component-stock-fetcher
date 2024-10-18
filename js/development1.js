@@ -5,13 +5,12 @@ class DynamicFetcher extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['endpoint']; // Observe 'endpoint' attributes
+    return ['base-url', 'endpoint']; // Observe 'base-url' and 'endpoint' attributes
   }
 
   async connectedCallback() {
-    // https://s3.ap-southeast-2.amazonaws.com/stock.publish/dealer_2343/stock.json
+    const baseUrl = this.getAttribute('base-url'); // Get the base URL from the attribute
     const endpoint = this.getAttribute('endpoint'); // Get the endpoint from the attribute
-    const baseUrl = 'https://jsonplaceholder.typicode.com'; // Get the base URL from the attribute
     if (baseUrl && endpoint) {
       const url = `${baseUrl}/${endpoint}`; // Construct the full URL
       try {
@@ -50,7 +49,7 @@ class DynamicFetcher extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if ((name === 'endpoint') && newValue) {
+    if ((name === 'base-url' || name === 'endpoint') && newValue) {
       this.connectedCallback(); // Re-fetch data if either attribute changes
     }
   }
