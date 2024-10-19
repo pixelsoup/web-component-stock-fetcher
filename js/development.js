@@ -5,7 +5,7 @@ class StockFetcher extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['dealer-id']; // Observe 'dealer-id' attribute
+    return ['dealer-id', 'primary-col']; // Observe 'dealer-id' and 'primary-col' attributes
   }
 
   async connectedCallback() {
@@ -44,7 +44,7 @@ class StockFetcher extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          --primaryCol: red; /* Default color */
+          --primaryCol: gray; /* Default color */
         }
 
         .numberOfStock {
@@ -94,13 +94,13 @@ class StockFetcher extends HTMLElement {
         ${content} <!-- Display the fetched data -->
       </div>
     `;
+
+    // Set custom property based on primary-col attribute
+    this.updatePrimaryColor();
   }
 
-  // Helper method to create stock item HTML
   createStockItem(stock) {
     const images = stock.images;
-    // Check if stock.images is null or an empty array
-    // Use a placeholder image if no valid images
     const imageSrc = (Array.isArray(images) && images.length > 0)
                      ? images[0]
                      : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
@@ -124,6 +124,16 @@ class StockFetcher extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'dealer-id' && newValue) {
       this.connectedCallback(); // Re-fetch data if the dealer-id changes
+    } else if (name === 'primary-col') {
+      this.updatePrimaryColor(); // Update primary color when it changes
+    }
+  }
+
+  updatePrimaryColor() {
+    const primaryCol = this.getAttribute('primary-col'); // Get primary color from the attribute
+
+    if (primaryCol) {
+      this.style.setProperty('--primaryCol', primaryCol); // Set CSS custom property
     }
   }
 }
