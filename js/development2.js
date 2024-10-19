@@ -2,14 +2,6 @@ class StockFetcher extends HTMLElement {
   constructor() {
     super(); // Call the parent constructor
     this.attachShadow({ mode: 'open' }); // Create a shadow DOM
-
-		// Create a link element to load external CSS
-		const link = document.createElement('link');
-		link.setAttribute('rel', 'stylesheet');
-		link.setAttribute('href', '../css/stock-fetcher.css'); // Path to CSS file
-
-		// Append the link and fetchedData to the shadow root
-		this.shadowRoot.appendChild(link);
   }
 
   static get observedAttributes() {
@@ -30,7 +22,7 @@ class StockFetcher extends HTMLElement {
         this.render({ message: error.message }); // Handle errors during fetch
       }
     } else {
-      this.render({ message: 'Dealer ID not provided.' }); // Handle missing attribute
+      this.render({ message: 'Dealer ID not provided.' }); // Handle missing attributes
     }
   }
 
@@ -45,15 +37,62 @@ class StockFetcher extends HTMLElement {
   render(data) {
     const numberOfStock = Array.isArray(data) ? data.length : 0; // Get number of stock items
 
-    const fetchedData = Array.isArray(data)
-      ? data.map(stock => this.createStockItem(stock)).join('') // Prepare fetchedData for array of stock
-      : `<p>${data.message}</p>`; // Prepare fetchedData for error or single message
+    const content = Array.isArray(data)
+      ? data.map(stock => this.createStockItem(stock)).join('') // Prepare content for array of stock
+      : `<p>${data.message}</p>`; // Prepare content for error or single message
 
-    // Use += to add new html to previous html (link) and append to the shadow root
-    this.shadowRoot.innerHTML += `
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          --primaryCol: gray; /* Default color */
+        }
+
+        .numberOfStock {
+          color: var(--numberStockCol);
+        }
+
+        .stockItemsWrapper {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 15px;
+        }
+
+        .stockItem {
+          background-color: white;
+          border: 1px solid #ddd;
+        }
+
+        .stockItemHeading {
+          font-size: 14px;
+          color: white;
+          background-color: var(--primaryCol); /* Use custom property */
+          margin-block: 0;
+          padding: 5px;
+        }
+
+        .stockItemImage {
+            display: block;
+            width: 100%;
+        }
+
+        .stockFeatures {
+          background-color: white;
+          padding: 10px;
+        }
+
+        .stockFeatureItem {
+          font-size: 12px;
+          margin-block: 0;
+        }
+
+        strong {
+          font-family: var(--fontBold);
+        }
+      </style>
+
       <h3 class="numberOfStock">Number of Stock Items : ${numberOfStock}</h3>
       <div class="stockItemsWrapper">
-        ${fetchedData} <!-- Display the fetched data -->
+        ${content} <!-- Display the fetched data -->
       </div>
     `;
 

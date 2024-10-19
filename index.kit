@@ -9,10 +9,18 @@
   </head>
   <body>
     <div class="containerPadded">
+      <h2>Template?</h2>
+      <x-foo>
+        <template shadowrootmode="open">
+          <style>h2 { color: var(--primaryColour); }</style>
+          <h2>Shadow Content</h2>
+        </template>
+      </x-foo>
+      <hr>
       <h1>Our Stock</h1>
       <!--  2893 (31), 2880 (42), 2833 (40), 2798 (15), 2794 (564), 2343 (858)  -->
       <!--  primary-col="darkblue", navy, darkblue, cornflowerblue, crimson, brown, goldenrod, darkseagreen  -->
-      <stock-fetcher dealer-id="2893" primary-col="cornflowerblue"></stock-fetcher>
+      <stock-fetcher dealer-id="2893" primary-col="crimson"></stock-fetcher>
     <script src="./js/development.js"></script>
   </body>
 </html>

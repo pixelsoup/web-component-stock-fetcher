@@ -17,6 +17,7 @@
   --blue: #428fbd;
   --red: #ff5722;
   --purple: #734f79;
+  --primaryColour: purple;
 }
 
 *,
@@ -101,5 +102,5 @@ hr {
 }
 
 stock-fetcher {
-  --primaryCol: purple; /* Override primary color */
+  --primaryCol: var(--primaryColour) ; /* Override primary color */
 }
