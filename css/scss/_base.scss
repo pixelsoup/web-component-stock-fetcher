@@ -17,7 +17,6 @@
   --blue: #428fbd;
   --red: #ff5722;
   --purple: #734f79;
-  --primaryCol: red;
 }
 
 *,
@@ -99,4 +98,8 @@ hr {
   max-width: 1280px;
   margin-inline: auto;
   padding: 1em;
+}
+
+dynamic-fetcher {
+  --primaryCol: blue; /* Override primary color */
 }

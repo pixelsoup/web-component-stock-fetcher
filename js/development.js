@@ -14,7 +14,7 @@ class DynamicFetcher extends HTMLElement {
 
     if (dealerId) {
       const url = `${baseUrl}/dealer_${dealerId}/stock.json`; // Construct the full URL
-      console.log('url: ', url)
+
       try {
         const data = await this.fetchData(url); // Fetch data using the constructed URL
         this.render(data); // Render the fetched data
@@ -43,6 +43,9 @@ class DynamicFetcher extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
+        :host {
+          --primaryCol: red; /* Default color */
+        }
 
         .numberOfStock {
           color: var(--numberStockCol);
@@ -61,7 +64,7 @@ class DynamicFetcher extends HTMLElement {
         .stockItemHeading {
           font-size: 14px;
           color: white;
-          background-color: var(--primaryCol);
+          background-color: var(--primaryCol); /* Use custom property */
           margin-block: 0;
           padding: 5px;
         }
@@ -69,7 +72,7 @@ class DynamicFetcher extends HTMLElement {
         .stockItemImage {
             display: block;
             width: 100%;
-          }
+        }
 
         .stockFeatures {
           background-color: white;
@@ -92,26 +95,27 @@ class DynamicFetcher extends HTMLElement {
       </div>
     `;
   }
+
   // Helper method to create stock item HTML
   createStockItem(stock) {
-    // Check if stock.images is null or an empty array
-  const images = stock.images;
-  // Use a placeholder image if no valid images
-  const imageSrc = (Array.isArray(images) && images.length > 0) ? images[0] : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
+    const images = stock.images;
+    const imageSrc = (Array.isArray(images) && images.length > 0)
+                     ? images[0]
+                     : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
 
     return `
-    <div class="stockItem">
-      <p class="stockItemHeading">${stock.make} - ${stock.model}</p>
-      <img class="stockItemImage" src="${imageSrc}" alt="${stock.make} ${stock.model}" />
-      <div class="stockFeatures">
-        <p class="stockFeatureItem"><strong>Transmission</strong> ${stock.transmission}</p>
-        <p class="stockFeatureItem"><strong>Body Type</strong> ${stock.bodyType}</p>
-        <p class="stockFeatureItem"><strong>Color</strong> ${stock.colour}</p>
-        <p class="stockFeatureItem"><strong>Kilometres</strong> ${stock.odometer}</p>
-        <p class="stockFeatureItem"><strong>Engine</strong> ${stock.size} ${stock.sizeOption}</p>
-        <p class="stockFeatureItem"><strong>Stock № </strong> ${stock.stockNumber}</p>
+      <div class="stockItem">
+        <p class="stockItemHeading">${stock.make} - ${stock.model}</p>
+        <img class="stockItemImage" src="${imageSrc}" alt="${stock.make} ${stock.model}" />
+        <div class="stockFeatures">
+          <p class="stockFeatureItem"><strong>Transmission</strong> ${stock.transmission}</p>
+          <p class="stockFeatureItem"><strong>Body Type</strong> ${stock.bodyType}</p>
+          <p class="stockFeatureItem"><strong>Color</strong> ${stock.colour}</p>
+          <p class="stockFeatureItem"><strong>Kilometres</strong> ${stock.odometer}</p>
+          <p class="stockFeatureItem"><strong>Engine</strong> ${stock.size} ${stock.sizeOption}</p>
+          <p class="stockFeatureItem"><strong>Stock № </strong> ${stock.stockNumber}</p>
+        </div>
       </div>
-    </div>
     `;
   }
 
