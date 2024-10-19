@@ -17,7 +17,7 @@ class DynamicFetcher extends HTMLElement {
     console.log('baseUrl: ', baseUrl)
     console.log('endpoint: ', endpoint)
     console.log('fileName: ', fileName)
-    if (baseUrl && endpoint) {
+    if (endpoint) {
       const url = `${baseUrl}/${endpoint}/${fileName}`; // Construct the full URL
       try {
         const data = await this.fetchData(url); // Fetch data using the constructed URL
