@@ -1,4 +1,4 @@
-class DynamicFetcher extends HTMLElement {
+class StockFetcher extends HTMLElement {
   constructor() {
     super(); // Call the parent constructor
     this.attachShadow({ mode: 'open' }); // Create a shadow DOM
@@ -99,6 +99,8 @@ class DynamicFetcher extends HTMLElement {
   // Helper method to create stock item HTML
   createStockItem(stock) {
     const images = stock.images;
+    // Check if stock.images is null or an empty array
+    // Use a placeholder image if no valid images
     const imageSrc = (Array.isArray(images) && images.length > 0)
                      ? images[0]
                      : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
@@ -127,4 +129,4 @@ class DynamicFetcher extends HTMLElement {
 }
 
 // Define the custom element
-customElements.define('dynamic-fetcher', DynamicFetcher);
+customElements.define('stock-fetcher', StockFetcher);

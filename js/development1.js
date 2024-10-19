@@ -1,4 +1,4 @@
-class DynamicFetcher extends HTMLElement {
+class StockFetcher extends HTMLElement {
   constructor() {
     super(); // Call the parent constructor
     this.attachShadow({ mode: 'open' }); // Create a shadow DOM
@@ -56,4 +56,4 @@ class DynamicFetcher extends HTMLElement {
 }
 
 // Define the custom element
-customElements.define('dynamic-fetcher', DynamicFetcher);
+customElements.define('stock-fetcher', StockFetcher);
