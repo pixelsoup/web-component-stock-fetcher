@@ -5,25 +5,24 @@ class DynamicFetcher extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['dealer-id']; // Observe 'dealerId  ' attributes
+    return ['dealer-id']; // Observe 'dealer-id' attribute
   }
 
   async connectedCallback() {
-    // https://s3.ap-southeast-2.amazonaws.com/stock.publish/dealer_2343/stock.json
-    const baseUrl = 'https://s3.ap-southeast-2.amazonaws.com/stock.publish'; // Get the base URL from the attribute
-    const dealerId   = this.getAttribute('dealer-id'); // Get the dealer id from the attribute
+    const baseUrl = 'https://s3.ap-southeast-2.amazonaws.com/stock.publish';
+    const dealerId = this.getAttribute('dealer-id'); // Get the dealer id from the attribute
 
     if (dealerId) {
       const url = `${baseUrl}/dealer_${dealerId}/stock.json`; // Construct the full URL
+      console.log('url: ', url)
       try {
         const data = await this.fetchData(url); // Fetch data using the constructed URL
-        console.log('data', data)
         this.render(data); // Render the fetched data
       } catch (error) {
         this.render({ message: error.message }); // Handle errors during fetch
       }
     } else {
-      this.render({ message: 'Base URL or dealer-id not provided.' }); // Handle missing attributes
+      this.render({ message: 'Dealer ID not provided.' }); // Handle missing attributes
     }
   }
 
@@ -36,35 +35,89 @@ class DynamicFetcher extends HTMLElement {
   }
 
   render(data) {
-
-    const getArrayLength = (arr) => arr.length;
-    const numberOfStock = Array.isArray(data) && getArrayLength(data)
-    console.log('numberOfStock: ', numberOfStock)
+    const numberOfStock = Array.isArray(data) ? data.length : 0; // Get number of stock items
 
     const content = Array.isArray(data)
-      ? data.map(stock => `<p>${stock.make} - ${stock.model}</p>`).join('') // Prepare content for array of stock
+      ? data.map(stock => this.createStockItem(stock)).join('') // Prepare content for array of stock
       : `<p>${data.message}</p>`; // Prepare content for error or single message
 
-
-      this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
       <style>
-      .numberOfStock {
-        color: var(--numberStockCol);
-      }
-      p {
-        font-size: 16px;
-        color: green;
-        }
-        </style>
 
-        <h4 class="numberOfStock">Number of Stock: ${numberOfStock}</h4>
-      ${content} <!-- Display the fetched data -->
+        .numberOfStock {
+          color: var(--numberStockCol);
+        }
+
+        .stockItemsWrapper {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 15px;
+        }
+
+        .stockItem {
+          border: 1px solid #ddd;
+        }
+
+        .stockItemHeading {
+          font-size: 14px;
+          color: white;
+          background-color: var(--primaryCol);
+          margin-block: 0;
+          padding: 5px;
+        }
+
+        .stockItemImage {
+            display: block;
+            width: 100%;
+          }
+
+        .stockFeatures {
+          background-color: white;
+          padding: 10px;
+        }
+
+        .stockFeatureItem {
+          font-size: 12px;
+          margin-block: 0;
+        }
+
+        strong {
+          font-family: var(--fontBold);
+        }
+      </style>
+
+      <h4 class="numberOfStock">Number of Stock Items : ${numberOfStock}</h4>
+      <div class="stockItemsWrapper">
+        ${content} <!-- Display the fetched data -->
+      </div>
+    `;
+  }
+  // Helper method to create stock item HTML
+  createStockItem(stock) {
+    // Check if stock.images is null or an empty array
+  const images = stock.images;
+  // Use a placeholder image if no valid images
+  const imageSrc = (Array.isArray(images) && images.length > 0) ? images[0] : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
+
+    return `
+    <div class="stockItem">
+      <p class="stockItemHeading">${stock.make} - ${stock.model}</p>
+      <img class="stockItemImage" src="${imageSrc}" alt="${stock.make} ${stock.model}" />
+      <div class="stockFeatures">
+        <p class="stockFeatureItem"><strong>Transmission</strong> ${stock.transmission}</p>
+        <p class="stockFeatureItem"><strong>Body Type</strong> ${stock.bodyType}</p>
+        <p class="stockFeatureItem"><strong>Color</strong> ${stock.colour}</p>
+        <p class="stockFeatureItem"><strong>Kilometres</strong> ${stock.odometer}</p>
+        <p class="stockFeatureItem"><strong>Engine</strong> ${stock.size} ${stock.sizeOption}</p>
+        <p class="stockFeatureItem"><strong>Stock № </strong> ${stock.stockNumber}</p>
+      </div>
+    </div>
     `;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if ((name === 'dealer-id') && newValue) {
-      this.connectedCallback(); // Re-fetch data if either attribute changes
+    if (name === 'dealer-id' && newValue) {
+      this.connectedCallback(); // Re-fetch data if the dealer-id changes
     }
   }
 }
