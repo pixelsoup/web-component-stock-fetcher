@@ -5,20 +5,16 @@ class DynamicFetcher extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['endpoint']; // Observe 'endpoint' attributes
+    return ['dealer-id']; // Observe 'dealerId  ' attributes
   }
 
   async connectedCallback() {
     // https://s3.ap-southeast-2.amazonaws.com/stock.publish/dealer_2343/stock.json
     const baseUrl = 'https://s3.ap-southeast-2.amazonaws.com/stock.publish'; // Get the base URL from the attribute
-    const endpoint = this.getAttribute('endpoint'); // Get the endpoint from the attribute
-    const fileName = 'stock.json'
+    const dealerId   = this.getAttribute('dealer-id'); // Get the dealer id from the attribute
 
-    console.log('baseUrl: ', baseUrl)
-    console.log('endpoint: ', endpoint)
-    console.log('fileName: ', fileName)
-    if (endpoint) {
-      const url = `${baseUrl}/${endpoint}/${fileName}`; // Construct the full URL
+    if (dealerId) {
+      const url = `${baseUrl}/dealer_${dealerId}/stock.json`; // Construct the full URL
       try {
         const data = await this.fetchData(url); // Fetch data using the constructed URL
         console.log('data', data)
@@ -27,7 +23,7 @@ class DynamicFetcher extends HTMLElement {
         this.render({ message: error.message }); // Handle errors during fetch
       }
     } else {
-      this.render({ message: 'Base URL or endpoint not provided.' }); // Handle missing attributes
+      this.render({ message: 'Base URL or dealer-id not provided.' }); // Handle missing attributes
     }
   }
 
@@ -40,23 +36,34 @@ class DynamicFetcher extends HTMLElement {
   }
 
   render(data) {
+
+    const getArrayLength = (arr) => arr.length;
+    const numberOfStock = Array.isArray(data) && getArrayLength(data)
+    console.log('numberOfStock: ', numberOfStock)
+
     const content = Array.isArray(data)
-      ? data.map(stock => `<p>${stock.make} - ${stock.model}</p>`).join('') // Prepare content for array of stocks
+      ? data.map(stock => `<p>${stock.make} - ${stock.model}</p>`).join('') // Prepare content for array of stock
       : `<p>${data.message}</p>`; // Prepare content for error or single message
 
-    this.shadowRoot.innerHTML = `
+
+      this.shadowRoot.innerHTML = `
       <style>
-        p {
-          font-size: 16px;
-          color: green;
+      .numberOfStock {
+        color: var(--numberStockCol);
+      }
+      p {
+        font-size: 16px;
+        color: green;
         }
-      </style>
+        </style>
+
+        <h4 class="numberOfStock">Number of Stock: ${numberOfStock}</h4>
       ${content} <!-- Display the fetched data -->
     `;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if ((name === 'endpoint') && newValue) {
+    if ((name === 'dealer-id') && newValue) {
       this.connectedCallback(); // Re-fetch data if either attribute changes
     }
   }
