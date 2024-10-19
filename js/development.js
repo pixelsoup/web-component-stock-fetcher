@@ -58,6 +58,7 @@ class StockFetcher extends HTMLElement {
         }
 
         .stockItem {
+          background-color: white;
           border: 1px solid #ddd;
         }
 
@@ -89,7 +90,7 @@ class StockFetcher extends HTMLElement {
         }
       </style>
 
-      <h4 class="numberOfStock">Number of Stock Items : ${numberOfStock}</h4>
+      <h3 class="numberOfStock">Number of Stock Items : ${numberOfStock}</h3>
       <div class="stockItemsWrapper">
         ${content} <!-- Display the fetched data -->
       </div>
