@@ -128,15 +128,8 @@ class StockFetcher extends HTMLElement {
     if (name === 'dealer-id' && newValue) {
       this.connectedCallback();
     } else if (name === 'primary-col') {
-      this.updatePrimaryColor();
-    }
-  }
-
-  updatePrimaryColor() {
-    const primaryCol = this.getAttribute('primary-col');
-
-    if (primaryCol) {
-      this.style.setProperty('--primaryCol', primaryCol);
+      // Update the CSS custom property when primary-col changes
+      this.style.setProperty('--primaryCol', newValue);
     }
   }
 }
