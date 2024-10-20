@@ -101,6 +101,14 @@ hr {
   padding: 1em;
 }
 
+.preHightlighted {
+  background-color: #26292E;
+  color: #0088FF;
+  font-style: italic;
+  padding: 10px;
+  white-space: pre-line;
+}
+
 // stock-fetcher {
 //   --primaryCol: var(--primaryColour) ; /* Override primary color */
 // }
