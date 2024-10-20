@@ -1,29 +1,54 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
-    <title>Stock Fetch Web Compoonent</title>
+    <title>Stock Fetch Web Component</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="./images/favicon.svg" />
     <link rel="stylesheet" href="css/production.css">
-  </head>
-  <body>
+</head>
+<body>
     <div class="containerPadded">
-      <h2>Template</h2>
-      <x-foo>
-        <template shadowrootmode="open">
-          <style>h2 { color: var(--primaryColour); }</style>
-          <h2>Shadow Content</h2>
-        </template>
-      </x-foo>
-      <hr>
-      <h1>Our Stock</h1>
-      <!--  2893 (31), 2880 (42), 2833 (40), 2798 (15), 2794 (564), 2343 (858)  -->
-      <!--  primary-col="darkblue", navy, darkblue, cornflowerblue, crimson, brown, goldenrod, darkseagreen  -->
-      <stock-fetcher dealer-id="2893" primary-col="crimson"></stock-fetcher>
+        <h2>Template</h2>
+        <x-foo>
+            <template shadowrootmode="open">
+                <style>h2 { color: var(--primaryColour); }</style>
+                <h2>Shadow Content</h2>
+            </template>
+        </x-foo>
+        <hr>
+        <h1>Our Stock</h1>
+
+        <!-- Input for dealer ID -->
+        <input type="number" id="dealerIdInput" placeholder="Enter Dealer ID" />
+        <button id="fetchButton">Fetch Stock</button>
+
+        <!-- Input for primary color -->
+        <input type="text" id="primaryColInput" placeholder="Enter Primary Color" />
+        <button id="updateColorButton">Update Primary Color</button>
+
+
+        <!-- Primary color example -->
+        <!-- primary-col="darkblue", navy, darkblue, cornflowerblue, crimson, brown, goldenrod, darkseagreen -->
+        <stock-fetcher dealer-id="" primary-col=""></stock-fetcher>
     </div>
 
     <script src="./wc-stock-fetcher/wc-stock-fetcher.js"></script>
-  </body>
+    <script>
+        // Add event listener to fetch button
+        document.getElementById('fetchButton').addEventListener('click', () => {
+            const dealerId = document.getElementById('dealerIdInput').value;
+            const stockFetcher = document.querySelector('stock-fetcher');
+            stockFetcher.setAttribute('dealer-id', dealerId); // Update dealer-id attribute
+        });
+
+        // Add event listener to update color button
+        document.getElementById('updateColorButton').addEventListener('click', () => {
+            const primaryCol = document.getElementById('primaryColInput').value;
+            const stockFetcher = document.querySelector('stock-fetcher');
+            stockFetcher.setAttribute('primary-col', primaryCol); // Update primary-col attribute
+        });
+    </script>
+</body>
 </html>
