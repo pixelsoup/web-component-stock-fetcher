@@ -91,46 +91,46 @@ class StockFetcher extends HTMLElement {
     const itemClone = document.createElement('div');
     itemClone.classList.add('stockItem');
 
-  // Use a fallback image if none are available.
-  const images = stock.images;
-  const imageSrc = (Array.isArray(images) && images.length > 0)
-                     ? images[0]
-                     : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
+    // Use a fallback image if none are available.
+    const images = stock.images;
+    const imageSrc = (Array.isArray(images) && images.length > 0)
+                      ? images[0]
+                      : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
 
-  // Create elements instead of using innerHTML for better performance and security.
-  const heading = document.createElement('p');
-  heading.classList.add('stockItemHeading');
-  heading.textContent = `${stock.make} - ${stock.model}`;
+    // Create elements instead of using innerHTML for better performance and security.
+    const heading = document.createElement('p');
+    heading.classList.add('stockItemHeading');
+    heading.textContent = `${stock.make} - ${stock.model}`;
 
-  const image = document.createElement('img');
-  image.classList.add('stockItemImage');
-  image.src = imageSrc;
-  image.alt = `${stock.make} ${stock.model}`;
+    const image = document.createElement('img');
+    image.classList.add('stockItemImage');
+    image.src = imageSrc;
+    image.alt = `${stock.make} ${stock.model}`;
 
-  const featuresDiv = document.createElement('div');
-  featuresDiv.classList.add('stockFeatures');
+    const featuresDiv = document.createElement('div');
+    featuresDiv.classList.add('stockFeatures');
 
-  const features = [
-    { label: 'Transmission', value: stock.transmission || 'N/A' },
-    { label: 'Body Type', value: stock.bodyType || 'N/A' },
-    { label: 'Color', value: stock.colour || 'N/A' },
-    { label: 'Kilometres', value: stock.odometer || 'N/A' },
-    { label: 'Engine', value: `${stock.size || 'N/A'} ${stock.sizeOption || ''}` },
-    { label: 'Stock №', value: stock.stockNumber || 'N/A' }
-  ];
+    const features = [
+      { label: 'Transmission', value: stock.transmission || 'N/A' },
+      { label: 'Body Type', value: stock.bodyType || 'N/A' },
+      { label: 'Color', value: stock.colour || 'N/A' },
+      { label: 'Kilometres', value: stock.odometer || 'N/A' },
+      { label: 'Engine', value: `${stock.size || 'N/A'} ${stock.sizeOption || ''}` },
+      { label: 'Stock №', value: stock.stockNumber || 'N/A' }
+    ];
 
-  features.forEach(feature => {
-    const featureItem = document.createElement('p');
-    featureItem.classList.add('stockFeatureItem');
-    featureItem.innerHTML = `<strong>${feature.label}</strong> ${feature.value}`;
-    featuresDiv.appendChild(featureItem);
-  });
+    features.forEach(feature => {
+      const featureItem = document.createElement('p');
+      featureItem.classList.add('stockFeatureItem');
+      featureItem.innerHTML = `<strong>${feature.label}</strong> ${feature.value}`;
+      featuresDiv.appendChild(featureItem);
+    });
 
-  itemClone.appendChild(heading);
-  itemClone.appendChild(image);
-  itemClone.appendChild(featuresDiv);
+    itemClone.appendChild(heading);
+    itemClone.appendChild(image);
+    itemClone.appendChild(featuresDiv);
 
-  return itemClone;
+    return itemClone;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
