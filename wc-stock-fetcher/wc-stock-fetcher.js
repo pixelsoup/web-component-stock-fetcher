@@ -43,10 +43,11 @@ class StockFetcher extends HTMLElement {
   }
 
   render(data) {
-    const numberOfStock = Array.isArray(data) ? data.length : 0; // Get number of stock items
-
+    // Get number of stock items
+    const numberOfStock = Array.isArray(data) ? data.length : 0;
+    // Prepare fetchedData for array of stock
     const fetchedData = Array.isArray(data)
-      ? data.map(stock => this.createStockItem(stock)).join('') // Prepare fetchedData for array of stock
+      ? data.map(stock => this.createStockItem(stock)).join('')
       : `<p>${data.message}</p>`; // Prepare fetchedData for error or single message
 
     // Use += to add new html to previous html (link) and append to the shadow root
@@ -92,7 +93,8 @@ class StockFetcher extends HTMLElement {
   }
 
   updatePrimaryColor() {
-    const primaryCol = this.getAttribute('primary-col'); // Get primary color from the attribute
+    // Get primary colour from the attribute
+    const primaryCol = this.getAttribute('primary-col');
 
     if (primaryCol) {
       this.style.setProperty('--primaryCol', primaryCol); // Set CSS custom property
