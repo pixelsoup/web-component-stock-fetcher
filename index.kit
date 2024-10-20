@@ -29,18 +29,55 @@
         <button id="updateColorButton">Update Primary Color</button>
 
 
+        <!-- Displaying the dynamic stock-fetcher tag -->
+
+        <pre style="color: white; margin-block: 20px; padding: 10px; background: black;" id="dynamicCode">&lt;stock-fetcher dealer-id="" primary-col=""&gt;&lt;/stock-fetcher&gt;</pre>
+
+
+
+
         <!-- Primary color example -->
-        <!-- primary-col="darkblue", navy, darkblue, cornflowerblue, crimson, brown, goldenrod, darkseagreen -->
         <stock-fetcher dealer-id="" primary-col=""></stock-fetcher>
     </div>
 
     <script src="./wc-stock-fetcher/wc-stock-fetcher.js"></script>
     <script>
+        // Function to get query parameters from URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const regex = /([^&=]+)=([^&]*)/g;
+            let match;
+            while (match = regex.exec(queryString)) {
+                params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+            }
+            return params;
+        }
+
+        // Update stock-fetcher attributes based on query parameters
+        function updateStockFetcherFromQuery() {
+            const params = getQueryParams();
+            const stockFetcher = document.querySelector('stock-fetcher');
+
+            if (params['dealer-id']) {
+                stockFetcher.setAttribute('dealer-id', params['dealer-id']);
+            }
+            if (params['primary-col']) {
+                stockFetcher.setAttribute('primary-col', params['primary-col']);
+            }
+
+            // Update displayed code
+            updateDisplayedCode();
+        }
+
         // Add event listener to fetch button
         document.getElementById('fetchButton').addEventListener('click', () => {
             const dealerId = document.getElementById('dealerIdInput').value;
             const stockFetcher = document.querySelector('stock-fetcher');
             stockFetcher.setAttribute('dealer-id', dealerId); // Update dealer-id attribute
+
+            // Update displayed code
+            updateDisplayedCode();
         });
 
         // Add event listener to update color button
@@ -48,7 +85,23 @@
             const primaryCol = document.getElementById('primaryColInput').value;
             const stockFetcher = document.querySelector('stock-fetcher');
             stockFetcher.setAttribute('primary-col', primaryCol); // Update primary-col attribute
+
+            // Update displayed code
+            updateDisplayedCode();
         });
+
+        function updateDisplayedCode() {
+            const stockFetcher = document.querySelector('stock-fetcher');
+            const dealerId = stockFetcher.getAttribute('dealer-id');
+            const primaryCol = stockFetcher.getAttribute('primary-col');
+
+            // Update the dynamic code display
+            const dynamicCode = `<stock-fetcher dealer-id="${dealerId}" primary-col="${primaryCol}"></stock-fetcher>`;
+            document.getElementById('dynamicCode').textContent = dynamicCode;
+        }
+
+        // Call this function to update attributes based on URL query parameters when the page loads
+        window.onload = updateStockFetcherFromQuery;
     </script>
 </body>
 </html>
