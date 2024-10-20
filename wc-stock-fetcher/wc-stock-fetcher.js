@@ -64,25 +64,20 @@ class StockFetcher extends HTMLElement {
     // Populate heading with number of stock items
     numberOfStockHeading.textContent = `Number of Stock Items: ${numberOfStock}`;
 
-    // Create a wrapper for stock items using DocumentFragment
+    // Create a wrapper for stock items
     const stockItemsWrapper = document.createElement('div');
     stockItemsWrapper.classList.add('stockItemsWrapper');
 
-    const itemsFragment = document.createDocumentFragment(); // Create a DocumentFragment to hold stock items
-
     if (Array.isArray(data)) {
       data.forEach(stock => {
-        const itemClone = this.createStockItem(stock); // Create a stock item element
-        itemsFragment.appendChild(itemClone); // Append it to the fragment
+        const itemClone = this.createStockItem(stock);
+        stockItemsWrapper.appendChild(itemClone);
       });
     } else {
       const messageParagraph = document.createElement('p');
-      messageParagraph.textContent = data.message; // Show error or message if no data available
-      itemsFragment.appendChild(messageParagraph);
+      messageParagraph.textContent = data.message;
+      stockItemsWrapper.appendChild(messageParagraph);
     }
-
-    // Append all stock items from the fragment to the wrapper
-    stockItemsWrapper.appendChild(itemsFragment);
 
     // Append heading and wrapper to shadow DOM in correct order
     this.shadowRoot.appendChild(numberOfStockHeading);
