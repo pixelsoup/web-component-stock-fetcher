@@ -67,8 +67,8 @@ class StockFetcher extends HTMLElement {
 
     if (Array.isArray(data)) {
       data.forEach(stock => {
-        const itemClone = this.createStockItem(stock);
-        stockItemsWrapper.appendChild(itemClone); // Append each stock item to the wrapper
+        const stockItemClone = this.createStockItem(stock);
+        stockItemsWrapper.appendChild(stockItemClone); // Append each stock item to the wrapper
       });
     } else {
       const messageParagraph = document.createElement('p');
@@ -78,8 +78,8 @@ class StockFetcher extends HTMLElement {
   }
 
   createStockItem(stock) {
-    const itemClone = document.createElement('div');
-    itemClone.classList.add('stockItem');
+    const stockItem = document.createElement('div');
+    stockItem.classList.add('stockItem');
 
     const images = stock.images;
     const imageSrc = (Array.isArray(images) && images.length > 0)
@@ -117,11 +117,11 @@ class StockFetcher extends HTMLElement {
       featuresDiv.appendChild(featureItem);
     });
 
-    itemClone.appendChild(heading);
-    itemClone.appendChild(image);
-    itemClone.appendChild(featuresDiv);
+    stockItem.appendChild(heading);
+    stockItem.appendChild(image);
+    stockItem.appendChild(featuresDiv);
 
-    return itemClone;
+    return stockItem;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
