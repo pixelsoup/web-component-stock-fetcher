@@ -6,7 +6,7 @@ class StockFetcher extends HTMLElement {
     // Create a link element to load external CSS
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', './wc-stock-fetcher/wc-stock-fetcher.css');
+    link.setAttribute('href', './wc-stock-fetcher/wc-stock-fetcher.css'); // Path to CSS file
 
     // Append the link to the shadow root
     this.shadowRoot.appendChild(link);
@@ -44,7 +44,9 @@ class StockFetcher extends HTMLElement {
 
   render(data) {
     // Clear existing items from previous fetches
-    this.shadowRoot.innerHTML = ''; // Clear previous content
+    while (this.shadowRoot.firstChild) {
+      this.shadowRoot.removeChild(this.shadowRoot.firstChild); // Clear previous content
+    }
 
     // Append CSS link again after clearing
     const link = document.createElement('link');
@@ -58,66 +60,84 @@ class StockFetcher extends HTMLElement {
 
     // Get number of stock items
     const numberOfStock = Array.isArray(data) ? data.length : 0;
+
+    // Populate heading with number of stock items
     numberOfStockHeading.textContent = `Number of Stock Items: ${numberOfStock}`;
 
-    // Create a wrapper for stock items using DocumentFragment
-    const stockItemsWrapper = document.createElement('div'); // Create a div for styling
-    stockItemsWrapper.classList.add('stockItemsWrapper'); // Add class for styling
-
-    const itemsFragment = document.createDocumentFragment(); // Create a DocumentFragment to hold stock items
+    // Create a wrapper for stock items
+    const stockItemsWrapper = document.createElement('div');
+    stockItemsWrapper.classList.add('stockItemsWrapper');
 
     if (Array.isArray(data)) {
       data.forEach(stock => {
-        const itemClone = this.createStockItem(stock); // Create a stock item element
-        itemsFragment.appendChild(itemClone); // Append it to the fragment
+        const itemClone = this.createStockItem(stock);
+        stockItemsWrapper.appendChild(itemClone);
       });
     } else {
       const messageParagraph = document.createElement('p');
-      messageParagraph.textContent = data.message; // Show error or message if no data available
-      itemsFragment.appendChild(messageParagraph);
+      messageParagraph.textContent = data.message;
+      stockItemsWrapper.appendChild(messageParagraph);
     }
 
-    // Append all stock items from the fragment to the wrapper
-    stockItemsWrapper.appendChild(itemsFragment);
-
     // Append heading and wrapper to shadow DOM in correct order
-    this.shadowRoot.appendChild(numberOfStockHeading); // Append heading first
-    this.shadowRoot.appendChild(stockItemsWrapper); // Append wrapper after heading
+    this.shadowRoot.appendChild(numberOfStockHeading);
+    this.shadowRoot.appendChild(stockItemsWrapper);
 
     // Set custom property based on primary-col attribute
     this.updatePrimaryColor();
   }
 
   createStockItem(stock) {
-    const itemClone = document.createElement('div'); // Create a new div for stock item
-    itemClone.classList.add('stockItem'); // Add class for styling
+    const itemClone = document.createElement('div');
+    itemClone.classList.add('stockItem');
 
-    const images = stock.images;
-    const imageSrc = (Array.isArray(images) && images.length > 0)
+  // Use a fallback image if none are available.
+  const images = stock.images;
+  const imageSrc = (Array.isArray(images) && images.length > 0)
                      ? images[0]
-                     : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato'; // Fallback image
+                     : 'https://placehold.co/250x167/e1e1e1/bebebe?text=No%20Image&font=lato';
 
-    itemClone.innerHTML = `
-      <p class="stockItemHeading">${stock.make} - ${stock.model}</p>
-      <img class="stockItemImage" src="${imageSrc}" alt="${stock.make} ${stock.model}" />
-      <div class="stockFeatures">
-        <p class="stockFeatureItem"><strong>Transmission</strong> ${stock.transmission || 'N/A'}</p>
-        <p class="stockFeatureItem"><strong>Body Type</strong> ${stock.bodyType || 'N/A'}</p>
-        <p class="stockFeatureItem"><strong>Color</strong> ${stock.colour || 'N/A'}</p>
-        <p class="stockFeatureItem"><strong>Kilometres</strong> ${stock.odometer || 'N/A'}</p>
-        <p class="stockFeatureItem"><strong>Engine</strong> ${stock.size || 'N/A'} ${stock.sizeOption || ''}</p>
-        <p class="stockFeatureItem"><strong>Stock № </strong> ${stock.stockNumber || 'N/A'}</p>
-      </div>
-    `;
+  // Create elements instead of using innerHTML for better performance and security.
+  const heading = document.createElement('p');
+  heading.classList.add('stockItemHeading');
+  heading.textContent = `${stock.make} - ${stock.model}`;
 
-    return itemClone; // Return the populated list item element
+  const image = document.createElement('img');
+  image.classList.add('stockItemImage');
+  image.src = imageSrc;
+  image.alt = `${stock.make} ${stock.model}`;
+
+  const featuresDiv = document.createElement('div');
+  featuresDiv.classList.add('stockFeatures');
+
+  const features = [
+    { label: 'Transmission', value: stock.transmission || 'N/A' },
+    { label: 'Body Type', value: stock.bodyType || 'N/A' },
+    { label: 'Color', value: stock.colour || 'N/A' },
+    { label: 'Kilometres', value: stock.odometer || 'N/A' },
+    { label: 'Engine', value: `${stock.size || 'N/A'} ${stock.sizeOption || ''}` },
+    { label: 'Stock №', value: stock.stockNumber || 'N/A' }
+  ];
+
+  features.forEach(feature => {
+    const featureItem = document.createElement('p');
+    featureItem.classList.add('stockFeatureItem');
+    featureItem.innerHTML = `<strong>${feature.label}</strong> ${feature.value}`;
+    featuresDiv.appendChild(featureItem);
+  });
+
+  itemClone.appendChild(heading);
+  itemClone.appendChild(image);
+  itemClone.appendChild(featuresDiv);
+
+  return itemClone;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'dealer-id' && newValue) {
-      this.connectedCallback(); // Re-fetch data if the dealer-id changes
+      this.connectedCallback();
     } else if (name === 'primary-col') {
-      this.updatePrimaryColor(); // Update primary color when it changes
+      this.updatePrimaryColor();
     }
   }
 
@@ -125,7 +145,7 @@ class StockFetcher extends HTMLElement {
     const primaryCol = this.getAttribute('primary-col');
 
     if (primaryCol) {
-      this.style.setProperty('--primaryCol', primaryCol); // Set CSS custom property for primary color
+      this.style.setProperty('--primaryCol', primaryCol);
     }
   }
 }
