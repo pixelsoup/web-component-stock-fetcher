@@ -58,26 +58,29 @@ class StockFetcher extends HTMLElement {
 
     // Get number of stock items
     const numberOfStock = Array.isArray(data) ? data.length : 0;
-
-    // Populate heading with number of stock items
     numberOfStockHeading.textContent = `Number of Stock Items: ${numberOfStock}`;
 
-    // Create a wrapper for stock items
-    const stockItemsWrapper = document.createElement('div');
-    stockItemsWrapper.classList.add('stockItemsWrapper');
+    // Create a wrapper for stock items using DocumentFragment
+    const stockItemsWrapper = document.createElement('div'); // Create a div for styling
+    stockItemsWrapper.classList.add('stockItemsWrapper'); // Add class for styling
+
+    const itemsFragment = document.createDocumentFragment(); // Create a DocumentFragment to hold stock items
 
     if (Array.isArray(data)) {
       data.forEach(stock => {
         const itemClone = this.createStockItem(stock); // Create a stock item element
-        stockItemsWrapper.appendChild(itemClone); // Append it to the list wrapper
+        itemsFragment.appendChild(itemClone); // Append it to the fragment
       });
     } else {
       const messageParagraph = document.createElement('p');
       messageParagraph.textContent = data.message; // Show error or message if no data available
-      stockItemsWrapper.appendChild(messageParagraph);
+      itemsFragment.appendChild(messageParagraph);
     }
 
-    // Append both elements to shadow DOM in correct order
+    // Append all stock items from the fragment to the wrapper
+    stockItemsWrapper.appendChild(itemsFragment);
+
+    // Append heading and wrapper to shadow DOM in correct order
     this.shadowRoot.appendChild(numberOfStockHeading); // Append heading first
     this.shadowRoot.appendChild(stockItemsWrapper); // Append wrapper after heading
 
