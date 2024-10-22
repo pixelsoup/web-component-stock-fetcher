@@ -1,4 +1,5 @@
 class StockFetcher extends HTMLElement {
+
   constructor() {
     super(); // Call the parent constructor
     this.attachShadow({ mode: 'open' }); // Create a shadow DOM
